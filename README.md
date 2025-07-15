@@ -1,76 +1,118 @@
-# Local-RAG
-Local RAG Pipeline with Gemma-2B and MPNet Embeddings (PyTorch)
-This project implements a Retrieval-Augmented Generation (RAG) pipeline from scratch using PyTorch. It allows you to query large documents (like PDFs) and get accurate, contextual answers by combining retrieval-based and generative techniques.
+# 🔍📚 Local-RAG: A Lightweight RAG Pipeline with Gemma-2B and MPNet (PyTorch)
 
-The entire pipeline is designed to run locally on GPU, using:
+Welcome to **Local-RAG**, a fully local **Retrieval-Augmented Generation (RAG)** pipeline built entirely using **PyTorch**, designed and developed by [Rushabh333](https://github.com/Rushabh333). This pipeline enables intelligent question answering over large documents like PDFs — all running on your **local GPU**.
 
-LLM: gemma-2b-it (locally hosted)
+---
 
-Embedding model: all-mpnet-base-v2 (for semantic chunking)
+## 🚀 Features
 
-Framework: Pure PyTorch (no LangChain/Faiss)
+- ✅ Local inference with **Gemma-2B-IT** LLM
+- ✅ Fast and accurate **semantic search** using `all-mpnet-base-v2` embeddings
+- ✅ Efficient **PDF text chunking** and embedding pipeline
+- ✅ Fully **PyTorch-native**, no LangChain/Faiss dependencies
+- ✅ Plug-and-play for **any textbook or PDF document**
+- ✅ Simple, clean, and extendable architecture
 
-🧩 Project Structure
-The RAG pipeline is broken into two major sections:
+---
 
-1. Document Preprocessing & Embedding
-PDF Loading: Open and parse any PDF document.
+## 🧠 Architecture Overview
 
-Text Chunking: Split text into manageable, semantically meaningful chunks.
+This pipeline is divided into **two major sections**:
 
-Embedding: Convert all chunks into dense vector embeddings using all-mpnet-base-v2.
+### 1. 📄 Document Preprocessing & Embedding
 
-Storage: Store embeddings and associated metadata for efficient retrieval.
+- 📥 Load any PDF textbook or research paper.
+- ✂️ Chunk the text into overlapping segments for better retrieval.
+- 🧠 Embed chunks using `all-mpnet-base-v2`.
+- 💾 Store embeddings and chunk metadata in memory or disk.
 
-2. Search & Answering
-Retrieval: Perform vector search to find the most relevant chunks for a given query.
+### 2. 🔎 Querying & Generation
 
-Prompt Creation: Construct a prompt by combining the user query with retrieved context.
+- 🔍 Accept a user query.
+- 🤖 Perform vector search to find top relevant chunks.
+- 📝 Create a prompt that includes these chunks.
+- 💬 Generate a final answer using **Gemma 2B (IT)** model locally.
 
-Answer Generation: Use the locally running gemma-2b-it model to generate answers grounded in retrieved context.
+---
 
-🛠️ Dependencies
-torch
+## 🔧 Setup Instructions
 
-transformers
+Follow these steps to run the project on your local machine (GPU recommended):
 
-sentence-transformers
+### 1. ✅ Clone the Repository
 
-PyMuPDF (fitz) or pdfplumber (for PDF parsing)
+```bash
+git clone https://github.com/Rushabh333/Local-RAG.git
+cd Local-RAG
+2. 🐍 Create a Virtual Environment
+bash
+Copy
+Edit
+python -m venv rag-env
+source rag-env/bin/activate  # Windows: rag-env\Scripts\activate
+3. 📦 Install Dependencies
+bash
+Copy
+Edit
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+pip install transformers accelerate
+pip install sentence-transformers
+pip install scikit-learn
+pip install PyMuPDF  # or: pip install pdfplumber
+Optional: Create a requirements.txt from your environment for reproducibility.
 
-numpy
+4. 💾 Load Models
+Embedding Model: all-mpnet-base-v2
+python
+Copy
+Edit
+from sentence_transformers import SentenceTransformer
+embed_model = SentenceTransformer("all-mpnet-base-v2")
+LLM: gemma-2b-it
+python
+Copy
+Edit
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
-scikit-learn (for nearest neighbor search or cosine similarity)
+tokenizer = AutoTokenizer.from_pretrained("google/gemma-2b-it")
+model = AutoModelForCausalLM.from_pretrained(
+    "google/gemma-2b-it",
+    device_map="auto",
+    torch_dtype=torch.float16
+)
+5. 📘 Preprocess a PDF
+python
+Copy
+Edit
+import fitz  # PyMuPDF
+doc = fitz.open("docs/my_textbook.pdf")
+text = "\n".join([page.get_text() for page in doc])
+Then chunk the text and embed it using your SentenceTransformer model.
 
-accelerate (for optimized inference on local GPU)
+6. 🔍 Ask Questions
+python
+Copy
+Edit
+query = "Explain dropout in neural networks."
+# → Retrieve top-k similar chunks from the embedding index
+# → Create a prompt: "Based on the following text, answer the question..."
+# → Generate the answer using Gemma
+📁 Project Structure
+bash
+Copy
+Edit
+Local-RAG/
+├── Local_RAG(2).ipynb      # Main notebook for RAG flow
+├── README.md               # This file
 
-All components are designed to work locally, without needing external APIs.
+📌 Future Improvements
+ Use disk-based vector DB (e.g., FAISS or ChromaDB)
 
-🚀 How to Run
-Clone the repo and install dependencies
+ Add conversation memory for chat-style interaction
 
-Load any PDF textbook/document
+ Web UI with Gradio or Streamlit
 
-Preprocess and embed it
+ Quantized LLMs for lower GPU memory usage
 
-Ask a question and get contextual answers powered by retrieval
-
-📌 Example Use Case
-Input Query: "What are the main applications of convolutional neural networks?"
-
-Output (Generated Answer):
-"Convolutional Neural Networks (CNNs) are primarily used in image and video recognition, medical image analysis, and time-series classification, as discussed in Chapter 3 of the uploaded textbook."
-
-📂 Files
-LOCAL_RAG(2).ipynb – Main notebook
-
-
-💡 Future Work
-Replace MPNet with custom fine-tuned domain embeddings
-
-Add support for conversational memory
-
-Integrate quantized or more efficient models for edge devices
-
-📃 License
-MIT License. Feel free to fork, modify, and use locally!
+🧑‍💻 Author
+Made by Rushabh Lodha (Rushabh333)
