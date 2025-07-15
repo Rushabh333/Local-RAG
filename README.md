@@ -1,3 +1,4 @@
+<img width="871" height="316" alt="Screenshot 2025-07-15 at 2 36 33 PM" src="https://github.com/user-attachments/assets/b779d7b0-b3fe-4656-b2d1-326e68772287" />
 # 🔍📚 Local-RAG: A Lightweight RAG Pipeline with Gemma-2B and MPNet (PyTorch)
 
 Welcome to **Local-RAG**, a fully local **Retrieval-Augmented Generation (RAG)** pipeline built entirely using **PyTorch**, designed and developed by [Rushabh333](https://github.com/Rushabh333). This pipeline enables intelligent question answering over large documents like PDFs — all running on your **local GPU**.
